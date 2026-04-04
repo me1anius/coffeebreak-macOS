@@ -9,7 +9,7 @@ A minimal, polished focus timer that lives in your macOS menu bar. Built with Sw
 3. Drag **Coffee Break.app** to your Applications folder
 4. Open it — the coffee cup icon will appear in your menu bar
 
-> **Note:** On first launch, macOS may say the app is from an unidentified developer. Right-click the app → **Open** → click **Open** to bypass this.
+> **Note:** On first launch, macOS may block the app. Go to **System Settings → Privacy & Security**, scroll down, and click **Open Anyway** to allow it.
 
 Works on Apple Silicon and Intel Macs running **macOS 13.0+** (Ventura or later).
 
