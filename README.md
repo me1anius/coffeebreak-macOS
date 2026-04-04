@@ -62,9 +62,9 @@ Pomodoro/
 
 ## Usage
 
-- Click the 🍅 in the menu bar to open the popover
+- Click the ☕️ in the menu bar to open the popover
 - Press **Play** to start a 25-minute focus session
-- The menu bar shows a live countdown: `🍅 18:32`
+- The menu bar shows a live countdown: `☕️ 18:32`
 - When the session ends, you'll hear a chime and see a notification
 - Breaks start automatically (if enabled) or wait for you to press Play
 - Click the **gear icon** to adjust durations and preferences
