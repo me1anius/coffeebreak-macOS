@@ -5,10 +5,11 @@ A minimal, polished focus timer that lives in your macOS menu bar. Built with Sw
 ## Screenshots
 
 <p align="center">
-  <img src="Screenshots/timer-idle.png" width="200" alt="Timer idle">
-  <img src="Screenshots/timer-focus.png" width="200" alt="Focus session">
-  <img src="Screenshots/timer-break.png" width="200" alt="Break session">
+  <img src="Screenshots/timer-idle.png" height="350" alt="Timer idle">
+  <img src="Screenshots/timer-focus.png" height="350" alt="Focus session">
+  <img src="Screenshots/timer-break.png" height="350" alt="Break session">
 </p>
+
 
 
 ## Install
