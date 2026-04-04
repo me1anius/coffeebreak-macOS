@@ -8,7 +8,6 @@ A minimal, polished focus timer that lives in your macOS menu bar. Built with Sw
   <img src="Screenshots/timer-idle.png" width="200" alt="Timer idle">
   <img src="Screenshots/timer-focus.png" width="200" alt="Focus session">
   <img src="Screenshots/timer-break.png" width="200" alt="Break session">
-  <img src="Screenshots/shortcuts.png" width="200" alt="Keyboard shortcuts">
 </p>
 
 
