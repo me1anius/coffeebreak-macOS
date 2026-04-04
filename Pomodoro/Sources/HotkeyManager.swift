@@ -175,6 +175,11 @@ final class HotkeyManager {
         }
     }
 
+    /// Public method to unregister all hotkeys (used during shortcut recording).
+    func unregisterAllPublic() {
+        unregisterAll()
+    }
+
     private func unregisterAll() {
         for ref in registeredHotkeys {
             UnregisterEventHotKey(ref)

@@ -26,5 +26,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         vm.onShortcutsChanged = { [weak hkm] in
             hkm?.reload()
         }
+        vm.onHotkeysPause = { [weak hkm] in
+            hkm?.unregisterAllPublic()
+        }
+        vm.onHotkeysResume = { [weak hkm] in
+            hkm?.reload()
+        }
     }
 }

@@ -262,6 +262,7 @@ struct SettingsView: View {
                             )
                     }
                     .buttonStyle(.plain)
+                    .disabled(recordingAction != nil)
 
                     Button(action: { clearShortcut(action) }) {
                         Image(systemName: "xmark.circle.fill")
@@ -269,6 +270,7 @@ struct SettingsView: View {
                             .foregroundStyle(.tertiary)
                     }
                     .buttonStyle(.plain)
+                    .disabled(recordingAction != nil)
                 }
             } else {
                 Button(action: { startRecording(action) }) {
@@ -283,6 +285,7 @@ struct SettingsView: View {
                         )
                 }
                 .buttonStyle(.plain)
+                .disabled(recordingAction != nil)
             }
         }
         .padding(.vertical, 2)
@@ -291,6 +294,9 @@ struct SettingsView: View {
     private func startRecording(_ action: ShortcutAction) {
         recordingAction = action
         shortcutError = false
+
+        // Unregister all global hotkeys so they don't fire during recording
+        viewModel.onHotkeysPause?()
 
         // Listen for the next key press locally (inside the app's popover)
         localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [self] event in
@@ -314,6 +320,13 @@ struct SettingsView: View {
                 return nil
             }
 
+            // Remove this shortcut from any other action that has it (prevent duplicates)
+            for otherAction in ShortcutAction.allCases where otherAction != action {
+                if let existing = ShortcutBinding.load(for: otherAction), existing == binding {
+                    ShortcutBinding.remove(for: otherAction)
+                }
+            }
+
             binding.save(for: action)
             stopRecording()
             viewModel.onShortcutsChanged?()
@@ -327,6 +340,8 @@ struct SettingsView: View {
             NSEvent.removeMonitor(monitor)
             localMonitor = nil
         }
+        // Re-register global hotkeys
+        viewModel.onHotkeysResume?()
         shortcutRefresh.toggle()
     }
 

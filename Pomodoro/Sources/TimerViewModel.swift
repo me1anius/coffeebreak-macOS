@@ -123,6 +123,9 @@ final class TimerViewModel: ObservableObject {
 
     /// Callback to reload hotkey bindings after shortcuts are changed in settings.
     var onShortcutsChanged: (() -> Void)?
+    /// Callback to pause/resume hotkeys during shortcut recording.
+    var onHotkeysPause: (() -> Void)?
+    var onHotkeysResume: (() -> Void)?
 
     // MARK: Private
 
