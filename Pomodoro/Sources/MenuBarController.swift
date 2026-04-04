@@ -138,7 +138,7 @@ final class MenuBarController {
         guard let button = statusItem.button else { return }
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Quit Pomodoro", action: #selector(quitApp), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Quit Coffee Break", action: #selector(quitApp), keyEquivalent: "q"))
         menu.items.forEach { $0.target = self }
 
         // Position the menu below the status item

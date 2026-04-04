@@ -1,12 +1,13 @@
 import SwiftUI
 
-/// A reusable circular progress ring with a gradient stroke.
+/// A circular progress ring with a gradient stroke.
 /// The ring animates smoothly as `progress` changes.
 struct ProgressRing: View {
     let progress: Double
     let gradientColors: [Color]
     let lineWidth: CGFloat
     let size: CGFloat
+    let isBreak: Bool
 
     var body: some View {
         ZStack {
@@ -22,14 +23,17 @@ struct ProgressRing: View {
                 .trim(from: 0, to: CGFloat(min(progress, 1.0)))
                 .stroke(
                     AngularGradient(
-                        gradient: Gradient(colors: gradientColors),
+                        gradient: Gradient(stops: [
+                            .init(color: gradientColors[0], location: 0.0),
+                            .init(color: gradientColors[1], location: 0.5),
+                            .init(color: gradientColors[0], location: 1.0)
+                        ]),
                         center: .center,
                         startAngle: .degrees(-90),
                         endAngle: .degrees(270)
                     ),
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
-                // Start from 12 o'clock position
                 .rotationEffect(.degrees(-90))
                 .animation(.easeInOut(duration: 0.5), value: progress)
 
@@ -38,7 +42,11 @@ struct ProgressRing: View {
                 .trim(from: 0, to: CGFloat(min(progress, 1.0)))
                 .stroke(
                     AngularGradient(
-                        gradient: Gradient(colors: gradientColors),
+                        gradient: Gradient(stops: [
+                            .init(color: gradientColors[0], location: 0.0),
+                            .init(color: gradientColors[1], location: 0.5),
+                            .init(color: gradientColors[0], location: 1.0)
+                        ]),
                         center: .center,
                         startAngle: .degrees(-90),
                         endAngle: .degrees(270)
@@ -53,4 +61,3 @@ struct ProgressRing: View {
         .frame(width: size, height: size)
     }
 }
-

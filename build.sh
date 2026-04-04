@@ -10,7 +10,7 @@
 
 set -e
 
-APP_NAME="Pomodoro"
+APP_NAME="Coffee Break"
 BUILD_DIR="./build"
 APP_BUNDLE="${BUILD_DIR}/${APP_NAME}.app"
 CONTENTS="${APP_BUNDLE}/Contents"
@@ -20,7 +20,7 @@ RESOURCES="${CONTENTS}/Resources"
 SOURCE_DIR="./Pomodoro/Sources"
 SDK_PATH=$(xcrun --show-sdk-path)
 
-echo "🍅 Building Pomodoro Timer..."
+echo "☕ Building Coffee Break..."
 echo "   SDK: ${SDK_PATH}"
 echo ""
 

@@ -49,7 +49,8 @@ struct TimerView: View {
                     progress: viewModel.progress,
                     gradientColors: AppColors.gradientForSession(!viewModel.sessionType.isBreak),
                     lineWidth: AppSizing.ringLineWidth,
-                    size: AppSizing.ringSize
+                    size: AppSizing.ringSize,
+                    isBreak: viewModel.sessionType.isBreak
                 )
 
                 // Large countdown text
@@ -159,7 +160,7 @@ struct TimerView: View {
             ForEach(0..<viewModel.pomodorosBeforeLongBreak, id: \.self) { index in
                 Capsule()
                     .fill(index < viewModel.completedPomodoros
-                          ? AppColors.workStart
+                          ? AppColors.workEnd
                           : Color.primary.opacity(0.15))
                     .frame(width: index < viewModel.completedPomodoros ? 16 : 8, height: 6)
                     .animation(.spring(response: 0.35, dampingFraction: 0.7), value: viewModel.completedPomodoros)
@@ -200,7 +201,7 @@ struct TimerView: View {
                     )
                     .clipShape(Circle())
                     .foregroundStyle(.white)
-                    .shadow(color: AppColors.workStart.opacity(0.3), radius: 8, y: 3)
+                    .shadow(color: AppColors.workStart.opacity(0.35), radius: 8, y: 3)
             }
             .buttonStyle(SpringButtonStyle())
             .animation(.easeInOut(duration: 0.2), value: viewModel.timerState == .running)

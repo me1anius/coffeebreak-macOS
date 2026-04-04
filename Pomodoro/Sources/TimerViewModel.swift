@@ -246,7 +246,7 @@ final class TimerViewModel: ObservableObject {
 
                 NotificationManager.shared.sendSessionNotification(
                     title: "Focus session complete!",
-                    body: "Great work! Time for a long break. You've completed \(completedPomodoros) pomodoros."
+                    body: "Great work! Time for a long break. You've completed \(completedPomodoros) sessions."
                 )
             } else {
                 sessionType = .shortBreak
@@ -254,7 +254,7 @@ final class TimerViewModel: ObservableObject {
 
                 NotificationManager.shared.sendSessionNotification(
                     title: "Focus session complete!",
-                    body: "Time for a short break. Pomodoro \(completedPomodoros) of \(pomodorosBeforeLongBreak) done."
+                    body: "Time for a short break. Session \(completedPomodoros) of \(pomodorosBeforeLongBreak) done."
                 )
             }
 
