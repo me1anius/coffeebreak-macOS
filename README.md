@@ -2,6 +2,16 @@
 
 A minimal, polished focus timer that lives in your macOS menu bar. Built with Swift, SwiftUI, and AppKit.
 
+## Screenshots
+
+<p align="center">
+  <img src="Screenshots/timer-idle.png" width="200" alt="Timer idle">
+  <img src="Screenshots/timer-focus.png" width="200" alt="Focus session">
+  <img src="Screenshots/timer-break.png" width="200" alt="Break session">
+  <img src="Screenshots/shortcuts.png" width="200" alt="Keyboard shortcuts">
+</p>
+
+
 ## Install
 
 1. Download **Coffee-Break.zip** from the [latest release](https://github.com/me1anius/pomodoro-macOS/releases/latest)
