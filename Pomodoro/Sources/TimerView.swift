@@ -143,6 +143,8 @@ struct TimerView: View {
             }
         }
         .frame(minHeight: 20)
+        .padding(.horizontal, 24)
+        .contentShape(Rectangle())
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
                 isHoveringLabel = hovering
