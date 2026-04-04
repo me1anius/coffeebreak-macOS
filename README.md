@@ -1,45 +1,66 @@
-# Pomodoro Timer — macOS Menu Bar App
+# Coffee Break — Focus Timer for macOS
 
-A minimal, polished Pomodoro timer that lives in your macOS menu bar. Built with Swift, SwiftUI, and AppKit.
+A minimal, polished focus timer that lives in your macOS menu bar. Built with Swift, SwiftUI, and AppKit.
+
+## Install
+
+1. Download **Coffee-Break.zip** from the [latest release](https://github.com/me1anius/pomodoro-macOS/releases/latest)
+2. Unzip it
+3. Drag **Coffee Break.app** to your Applications folder
+4. Open it — the coffee cup icon will appear in your menu bar
+
+> **Note:** On first launch, macOS may say the app is from an unidentified developer. Right-click the app → **Open** → click **Open** to bypass this.
+
+Works on Apple Silicon and Intel Macs running **macOS 13.0+** (Ventura or later).
 
 ## Features
 
 - **Menu bar native** — no Dock icon, no main window. Just a clean status item with live countdown
-- **Beautiful popover UI** — circular progress ring with gradient stroke, frosted glass background, spring animations
+- **Coffee-themed UI** — warm brown colour scheme, circular progress ring, frosted glass background, spring animations
+- **Global keyboard shortcuts** — customisable hotkeys for start/pause, skip, and reset
 - **Configurable** — work/break durations, auto-start, sound toggles, all persisted across launches
 - **Smart session flow** — automatic work → short break → work → ... → long break cycling
+- **Session naming** — optionally name your focus sessions
 - **Notifications** — macOS notifications + chime sound on session transitions
 - **Light & Dark mode** — follows system appearance automatically
 
-## Requirements
+## Usage
 
-- **macOS 13.0+** (Ventura or later)
-- **Xcode 15.0+**
-- Swift 5.9+
+- Click the ☕ in the menu bar to open the popover
+- Press **Play** to start a 25-minute focus session
+- The menu bar shows a live countdown: `☕ 18:32`
+- During breaks, the icon switches to a 🌙 moon
+- When a session ends, you'll hear a chime and see a notification
+- Click the **gear icon** to adjust durations, sounds, and keyboard shortcuts
+- Right-click the menu bar icon to quit
 
-## Build & Run
+## Customisation
 
-### Option A: Open the included Xcode project
+All settings are persisted via `UserDefaults` and survive app restarts:
 
-1. Open `Pomodoro.xcodeproj` in Xcode
-2. Select the **Pomodoro** scheme and **My Mac** as the destination
-3. Press **⌘R** to build and run
+| Setting | Default |
+|---------|---------|
+| Focus duration | 25 min |
+| Short break | 5 min |
+| Long break | 15 min |
+| Sessions before long break | 4 |
+| Auto-start breaks | Off |
+| Auto-start focus sessions | Off |
+| Sound on session end | On |
+| Tick sound | Off |
+| Show timer in menu bar | On |
 
-### Option B: Create a new Xcode project from scratch
+## Build from Source
 
-If you prefer to start fresh:
+If you'd prefer to build it yourself, no Xcode required — just the Command Line Tools:
 
-1. Open Xcode → **File → New → Project**
-2. Choose **macOS → App**, click Next
-3. Set:
-   - Product Name: `Pomodoro`
-   - Interface: **SwiftUI**
-   - Language: **Swift**
-4. Delete the auto-generated `ContentView.swift`
-5. Copy all `.swift` files from `Pomodoro/Sources/` into the project
-6. Replace `Info.plist` with the one provided (sets `LSUIElement = YES`)
-7. Add the `Pomodoro.entitlements` file to the project
-8. Build and run (**⌘R**)
+```bash
+xcode-select --install   # if not already installed
+cd pomodoro-macOS
+chmod +x build.sh
+./build.sh
+cp -r "build/Coffee Break.app" /Applications/
+```
 
 ## Project Structure
 
@@ -49,39 +70,15 @@ Pomodoro/
 │   ├── PomodoroApp.swift          # @main entry point
 │   ├── AppDelegate.swift          # Sets up NSStatusItem + NSPopover
 │   ├── MenuBarController.swift    # Manages menu bar item and popover
+│   ├── HotkeyManager.swift        # Global keyboard shortcuts (Carbon API)
 │   ├── TimerViewModel.swift       # Core timer logic (ObservableObject)
 │   ├── TimerView.swift            # Main popover UI (progress ring + controls)
 │   ├── SettingsView.swift         # Inline settings panel
-│   ├── ProgressRing.swift         # Reusable circular progress component
+│   ├── ProgressRing.swift         # Circular progress component
 │   ├── NotificationManager.swift  # macOS notifications + sound
-│   └── Constants.swift            # Defaults, colors, sizing
+│   └── Constants.swift            # Defaults, colours, sizing
+├── Resources/                     # Menu bar icons (coffee + moon)
 ├── Assets.xcassets/               # App icon asset catalog
 ├── Info.plist                     # LSUIElement = YES (no Dock icon)
 └── Pomodoro.entitlements          # App sandbox
 ```
-
-## Usage
-
-- Click the ☕️ in the menu bar to open the popover
-- Press **Play** to start a 25-minute focus session
-- The menu bar shows a live countdown: `☕️ 18:32`
-- When the session ends, you'll hear a chime and see a notification
-- Breaks start automatically (if enabled) or wait for you to press Play
-- Click the **gear icon** to adjust durations and preferences
-- Click outside the popover to dismiss it
-
-## Customization
-
-All settings are persisted via `UserDefaults` and survive app restarts:
-
-| Setting | Default |
-|---------|---------|
-| Focus duration | 25 min |
-| Short break | 5 min |
-| Long break | 15 min |
-| Pomodoros before long break | 4 |
-| Auto-start breaks | Off |
-| Auto-start pomodoros | Off |
-| Sound on session end | On |
-| Tick sound | Off |
-| Show timer in menu bar | On |
