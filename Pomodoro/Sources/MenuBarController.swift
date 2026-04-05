@@ -49,49 +49,20 @@ final class MenuBarController {
 
     // MARK: - Coffee Cup Icon
 
-    /// Loads the bundled coffee icon as a template image for the menu bar.
+    /// Creates the coffee cup icon for the menu bar using SF Symbol `cup.and.saucer.fill`.
     private static func makeCoffeeIcon() -> NSImage {
-        if let url = Bundle.main.url(forResource: "coffee_icon", withExtension: "png"),
-           let srcImage = NSImage(contentsOf: url) {
-            // Menu bar expects 22pt tall images. Draw the 18pt icon centered
-            // within a 22pt canvas so it sits vertically centered.
-            let iconSize: CGFloat = 18
-            let canvasHeight: CGFloat = 22
-            let canvas = NSImage(size: NSSize(width: iconSize, height: canvasHeight), flipped: false) { rect in
-                let yOffset = (canvasHeight - iconSize) / 2 - 1
-                srcImage.draw(in: NSRect(x: 0, y: yOffset, width: iconSize, height: iconSize))
-                return true
-            }
-            canvas.isTemplate = true
-            return canvas
-        }
-        let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium)
-        let fallback = NSImage(systemSymbolName: "timer", accessibilityDescription: "Pomodoro")!
-        let configured = fallback.withSymbolConfiguration(config) ?? fallback
+        let symbol = NSImage(systemSymbolName: "cup.and.saucer.fill", accessibilityDescription: "Coffee Break")!
+        let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .medium)
+        let configured = symbol.withSymbolConfiguration(config) ?? symbol
         configured.isTemplate = true
         return configured
     }
 
-    /// Loads the bundled moon icon as a template image for break sessions.
+    /// Creates the moon icon for break sessions using SF Symbol `moon.fill`.
     private static func makeMoonIcon() -> NSImage {
-        if let url = Bundle.main.url(forResource: "moon_icon", withExtension: "png"),
-           let srcImage = NSImage(contentsOf: url) {
-            let iconSize: CGFloat = 15
-            let canvasWidth: CGFloat = 18
-            let canvasHeight: CGFloat = 22
-            let canvas = NSImage(size: NSSize(width: canvasWidth, height: canvasHeight), flipped: false) { rect in
-                let xOffset = (canvasWidth - iconSize) / 2
-                let yOffset = (canvasHeight - iconSize) / 2 - 0.5
-                srcImage.draw(in: NSRect(x: xOffset, y: yOffset, width: iconSize, height: iconSize))
-                return true
-            }
-            canvas.isTemplate = true
-            return canvas
-        }
-        // Fallback to SF Symbol
-        let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium)
-        let fallback = NSImage(systemSymbolName: "moon.fill", accessibilityDescription: "Break")!
-        let configured = fallback.withSymbolConfiguration(config) ?? fallback
+        let symbol = NSImage(systemSymbolName: "moon.fill", accessibilityDescription: "Break")!
+        let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
+        let configured = symbol.withSymbolConfiguration(config) ?? symbol
         configured.isTemplate = true
         return configured
     }
