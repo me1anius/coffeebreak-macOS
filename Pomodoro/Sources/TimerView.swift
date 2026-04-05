@@ -6,6 +6,7 @@ struct TimerView: View {
     @ObservedObject var viewModel: TimerViewModel
     @State private var isEditingName: Bool = false
     @State private var isHoveringLabel: Bool = false
+    @State private var selectedLabel: String = ""
 
     var body: some View {
         ZStack {
@@ -87,12 +88,33 @@ struct TimerView: View {
                 .foregroundStyle(.secondary)
 
             if isEditingName {
-                HStack(spacing: 6) {
+                HStack(spacing: 4) {
+                    // Native menu picker for saved labels
+                    if !viewModel.recentLabels.isEmpty {
+                        Menu {
+                            ForEach(viewModel.recentLabels, id: \.self) { label in
+                                Button(label) {
+                                    viewModel.sessionName = label
+                                    isEditingName = false
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "chevron.down")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(.secondary)
+                                .frame(width: 18, height: 18)
+                                .background(Circle().fill(Color.primary.opacity(0.06)))
+                        }
+                        .menuStyle(.borderlessButton)
+                        .menuIndicator(.hidden)
+                        .frame(width: 18)
+                    }
+
                     TextField("e.g. Past Paper Review", text: $viewModel.sessionName)
                         .textFieldStyle(.plain)
                         .font(.system(size: 11, weight: .regular, design: .rounded))
                         .multilineTextAlignment(.center)
-                        .frame(width: 150)
+                        .frame(width: 140)
                         .padding(.vertical, 3)
                         .padding(.horizontal, 8)
                         .background(
@@ -269,3 +291,4 @@ struct VisualEffectView: NSViewRepresentable {
         nsView.blendingMode = blendingMode
     }
 }
+

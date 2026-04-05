@@ -121,6 +121,30 @@ final class TimerViewModel: ObservableObject {
     /// Callback for the menu bar controller to update the status item text.
     var onMenuBarTextChange: ((String) -> Void)?
 
+    // MARK: Recent Labels
+
+    /// Most recent session labels, persisted to UserDefaults (max 6).
+    @Published var recentLabels: [String] = {
+        UserDefaults.standard.stringArray(forKey: StorageKeys.recentLabels) ?? []
+    }()
+
+    /// Pin a label as a saved quick-pick.
+    func pinCurrentLabel(_ name: String? = nil) {
+        let label = (name ?? sessionName).trimmingCharacters(in: .whitespaces)
+        guard !label.isEmpty else { return }
+        guard !recentLabels.contains(label) else { return }
+        var labels = recentLabels
+        labels.append(label)
+        if labels.count > 10 { labels = Array(labels.prefix(10)) }
+        recentLabels = labels
+        UserDefaults.standard.set(labels, forKey: StorageKeys.recentLabels)
+    }
+
+    func removeSavedLabel(_ label: String) {
+        recentLabels.removeAll { $0 == label }
+        UserDefaults.standard.set(recentLabels, forKey: StorageKeys.recentLabels)
+    }
+
     /// Callback to reload hotkey bindings after shortcuts are changed in settings.
     var onShortcutsChanged: (() -> Void)?
     /// Callback to pause/resume hotkeys during shortcut recording.

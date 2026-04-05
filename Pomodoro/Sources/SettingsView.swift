@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var shortcutRefresh: Bool = false
     /// Shows an error when user tries an invalid shortcut combo.
     @State private var shortcutError: Bool = false
+    @State private var newLabelText: String = ""
 
     // Duration settings (stored in seconds)
     @AppStorage(StorageKeys.workDuration) private var workDuration: Double = Defaults.workDuration
@@ -77,6 +78,62 @@ struct SettingsView: View {
                         toggleRow("Show timer in menu bar", isOn: $showTimerInMenuBar)
                     }
 
+                    // MARK: Saved Labels
+                    settingsSection("Saved Labels") {
+                        // Add new label
+                        HStack(spacing: 6) {
+                            TextField("Add label...", text: $newLabelText)
+                                .textFieldStyle(.plain)
+                                .font(.system(size: 12, weight: .regular, design: .rounded))
+                                .padding(.vertical, 3)
+                                .padding(.horizontal, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                        .fill(Color.primary.opacity(0.04))
+                                )
+                                .onSubmit {
+                                    addLabel()
+                                }
+
+                            Button(action: addLabel) {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.system(size: 16))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(newLabelText.trimmingCharacters(in: .whitespaces).isEmpty)
+                        }
+                        .padding(.vertical, 2)
+
+                        // Existing labels
+                        ForEach(viewModel.recentLabels, id: \.self) { label in
+                            HStack {
+                                Text(label)
+                                    .font(.system(size: 12, weight: .regular, design: .rounded))
+                                    .lineLimit(1)
+
+                                Spacer()
+
+                                Button(action: {
+                                    viewModel.removeSavedLabel(label)
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.tertiary)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.vertical, 2)
+                        }
+
+                        if viewModel.recentLabels.isEmpty {
+                            Text("Labels you add here will appear as quick-picks when naming sessions")
+                                .font(.system(size: 10, design: .rounded))
+                                .foregroundStyle(.quaternary)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+
                     // MARK: Keyboard Shortcuts
                     settingsSection("Shortcuts") {
                         ForEach(ShortcutAction.allCases, id: \.rawValue) { action in
@@ -128,9 +185,10 @@ struct SettingsView: View {
                 .foregroundStyle(.tertiary)
                 .padding(.leading, 2)
 
-            VStack(spacing: 2) {
+            VStack(alignment: .leading, spacing: 2) {
                 content()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -215,12 +273,15 @@ struct SettingsView: View {
 
     /// A toggle row.
     private func toggleRow(_ label: String, isOn: Binding<Bool>) -> some View {
-        Toggle(isOn: isOn) {
+        HStack {
             Text(label)
                 .font(.system(size: 12, weight: .regular, design: .rounded))
+            Spacer()
+            Toggle("", isOn: isOn)
+                .toggleStyle(.switch)
+                .controlSize(.mini)
+                .labelsHidden()
         }
-        .toggleStyle(.switch)
-        .controlSize(.mini)
         .padding(.vertical, 1)
     }
 
@@ -349,6 +410,19 @@ struct SettingsView: View {
         ShortcutBinding.remove(for: action)
         viewModel.onShortcutsChanged?()
         shortcutRefresh.toggle()
+    }
+
+    // MARK: - Add Label
+
+    private func addLabel() {
+        let name = newLabelText.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return }
+        guard !viewModel.recentLabels.contains(name) else {
+            newLabelText = ""
+            return
+        }
+        viewModel.pinCurrentLabel(name)
+        newLabelText = ""
     }
 
     // MARK: - Reset Defaults

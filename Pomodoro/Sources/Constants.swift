@@ -21,6 +21,7 @@ enum StorageKeys {
     static let playSoundOnEnd = "playSoundOnEnd"
     static let showTimerInMenuBar = "showTimerInMenuBar"
     static let tickSoundEnabled = "tickSoundEnabled"
+    static let recentLabels = "recentLabels"
 }
 
 // MARK: - Visual Constants
