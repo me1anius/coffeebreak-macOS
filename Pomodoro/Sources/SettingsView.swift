@@ -27,6 +27,7 @@ struct SettingsView: View {
     @AppStorage(StorageKeys.playSoundOnEnd) private var playSoundOnEnd: Bool = true
     @AppStorage(StorageKeys.showTimerInMenuBar) private var showTimerInMenuBar: Bool = true
     @AppStorage(StorageKeys.tickSoundEnabled) private var tickSoundEnabled: Bool = false
+    @AppStorage(StorageKeys.swipeGestureEnabled) private var swipeGestureEnabled: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -78,6 +79,7 @@ struct SettingsView: View {
                         toggleRow("Sound on session end", isOn: $playSoundOnEnd)
                         toggleRow("Tick sound each second", isOn: $tickSoundEnabled)
                         toggleRow("Show timer in menu bar", isOn: $showTimerInMenuBar)
+                        toggleRow("Swipe to open settings", isOn: $swipeGestureEnabled)
                     }
 
                     // MARK: Saved Labels

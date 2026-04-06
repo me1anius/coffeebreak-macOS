@@ -24,6 +24,27 @@ struct TimerView: View {
             }
         }
         .frame(width: AppSizing.popoverWidth, height: AppSizing.popoverHeight)
+        .onAppear {
+            NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak viewModel] event in
+                guard let viewModel = viewModel,
+                      UserDefaults.standard.bool(forKey: StorageKeys.swipeGestureEnabled),
+                      event.phase == .changed,
+                      abs(event.scrollingDeltaX) > abs(event.scrollingDeltaY),
+                      abs(event.scrollingDeltaX) > 8 else {
+                    return event
+                }
+                if event.scrollingDeltaX < -8 && !viewModel.showSettings {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                        viewModel.showSettings = true
+                    }
+                } else if event.scrollingDeltaX > 8 && viewModel.showSettings {
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                        viewModel.showSettings = false
+                    }
+                }
+                return event
+            }
+        }
         .overlay {
             if showOnboarding {
                 OnboardingView(isPresented: $showOnboarding)
