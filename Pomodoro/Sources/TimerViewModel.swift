@@ -103,18 +103,18 @@ final class TimerViewModel: ObservableObject {
     var menuBarText: String {
         switch timerState {
         case .idle:
-            return "🍅 Ready"
+            return "Ready"
         case .paused:
             if showTimerInMenuBar {
-                return "🍅 \(formattedTime) ⏸"
+                return "Paused \(formattedTime)"
             }
-            return "🍅 Paused"
+            return "Paused"
         case .running:
+            let isBreak = sessionType.isBreak
             if showTimerInMenuBar {
-                let icon = sessionType.isBreak ? "☕" : "🍅"
-                return "\(icon) \(formattedTime)"
+                return isBreak ? "Break \(formattedTime)" : "Focus \(formattedTime)"
             }
-            return sessionType.isBreak ? "☕" : "🍅"
+            return isBreak ? "Break" : "Focus"
         }
     }
 

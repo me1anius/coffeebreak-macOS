@@ -71,25 +71,24 @@ final class MenuBarController {
     private func updateMenuBar(text: String) {
         guard let button = statusItem.button else { return }
 
-        if text.contains("Ready") || text.contains("Paused") {
-            button.image = Self.makeCoffeeIcon()
+        if text == "Ready" || text == "Paused" || text == "Focus" || text == "Break" {
+            // Icon only — no timer text
+            button.image = text == "Break" ? Self.makeMoonIcon() : Self.makeCoffeeIcon()
             button.imagePosition = .imageOnly
             button.title = ""
             statusItem.length = NSStatusItem.squareLength
-        } else if text.contains("☕") || text.contains("Break") {
+        } else if text.hasPrefix("Break") {
             statusItem.length = NSStatusItem.variableLength
             button.image = Self.makeMoonIcon()
             button.imagePosition = .imageLeading
-            let time = text.replacingOccurrences(of: "☕ ", with: "")
-                          .replacingOccurrences(of: "⏸", with: "").trimmingCharacters(in: .whitespaces)
-            button.title = time
+            button.title = text.replacingOccurrences(of: "Break ", with: "")
         } else {
+            // Focus or Paused with time
             statusItem.length = NSStatusItem.variableLength
             button.image = Self.makeCoffeeIcon()
             button.imagePosition = .imageLeading
-            let time = text.replacingOccurrences(of: "🍅 ", with: "")
-                          .replacingOccurrences(of: "⏸", with: "").trimmingCharacters(in: .whitespaces)
-            button.title = time
+            button.title = text.replacingOccurrences(of: "Focus ", with: "")
+                               .replacingOccurrences(of: "Paused ", with: "")
         }
     }
 
