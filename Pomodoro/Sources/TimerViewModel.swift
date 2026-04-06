@@ -125,7 +125,12 @@ final class TimerViewModel: ObservableObject {
 
     /// Most recent session labels, persisted to UserDefaults (max 6).
     @Published var recentLabels: [String] = {
-        UserDefaults.standard.stringArray(forKey: StorageKeys.recentLabels) ?? []
+        UserDefaults.standard.stringArray(forKey: StorageKeys.recentLabels) ?? [
+            "Reviewing Flashcards",
+            "Creating Mindmaps",
+            "Deep Work",
+            "Reading"
+        ]
     }()
 
     /// Pin a label as a saved quick-pick.

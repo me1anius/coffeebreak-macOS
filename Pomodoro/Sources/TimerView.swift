@@ -52,6 +52,11 @@ struct TimerView: View {
                     .transition(.opacity)
             }
         }
+        .onChange(of: viewModel.showSettings) { isShowing in
+            if !isShowing && !UserDefaults.standard.bool(forKey: StorageKeys.hasSeenOnboarding) {
+                showOnboarding = true
+            }
+        }
     }
 
     // MARK: - Timer Content
@@ -119,26 +124,8 @@ struct TimerView: View {
 
             if isEditingName {
                 HStack(spacing: 4) {
-                    // Native menu picker for saved labels
-                    if !viewModel.recentLabels.isEmpty {
-                        Menu {
-                            ForEach(viewModel.recentLabels, id: \.self) { label in
-                                Button(label) {
-                                    viewModel.sessionName = label
-                                    isEditingName = false
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "chevron.down")
-                                .font(.system(size: 9, weight: .bold))
-                                .foregroundStyle(.secondary)
-                                .frame(width: 18, height: 18)
-                                .background(Circle().fill(Color.primary.opacity(0.06)))
-                        }
-                        .menuStyle(.borderlessButton)
-                        .menuIndicator(.hidden)
-                        .frame(width: 18)
-                    }
+                    // Bookmark menu — contextual save + pick from saved labels
+                    bookmarkMenu
 
                     TextField("e.g. Past Paper Review", text: $viewModel.sessionName)
                         .textFieldStyle(.plain)
@@ -204,6 +191,49 @@ struct TimerView: View {
         }
         .animation(.easeInOut(duration: 0.2), value: isEditingName)
         .animation(.easeInOut(duration: 0.2), value: viewModel.sessionName.isEmpty)
+    }
+
+    // MARK: - Bookmark Menu
+
+    private var bookmarkMenu: some View {
+        let trimmed = viewModel.sessionName.trimmingCharacters(in: .whitespaces)
+        let isSaved = !trimmed.isEmpty && viewModel.recentLabels.contains(trimmed)
+        let hasUnsavedText = !trimmed.isEmpty && !isSaved
+
+        return Menu {
+            // Save option when there's unsaved text
+            if hasUnsavedText {
+                Button {
+                    viewModel.pinCurrentLabel()
+                } label: {
+                    Label("Save \"\(trimmed)\"", systemImage: "bookmark.fill")
+                }
+
+                Divider()
+            }
+
+            // Saved labels to pick from
+            if !viewModel.recentLabels.isEmpty {
+                ForEach(viewModel.recentLabels, id: \.self) { label in
+                    Button(label) {
+                        viewModel.sessionName = label
+                        isEditingName = false
+                    }
+                }
+            } else {
+                Text("No saved labels")
+                    .foregroundStyle(.secondary)
+            }
+        } label: {
+            Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
+                .font(.system(size: 12))
+                .foregroundStyle(isSaved ? AppColors.workStart : .secondary)
+                .frame(width: 18, height: 18)
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .frame(width: 18)
+        .animation(.easeInOut(duration: 0.2), value: isSaved)
     }
 
     // MARK: - Pomodoro Indicators

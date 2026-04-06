@@ -172,6 +172,23 @@ struct SettingsView: View {
                     }
                     .buttonStyle(SpringButtonStyle())
                     .padding(.top, 4)
+
+                    // MARK: Replay Introduction
+                    Button(action: {
+                        UserDefaults.standard.set(false, forKey: StorageKeys.hasSeenOnboarding)
+                        viewModel.showSettings = false
+                    }) {
+                        Text("Replay Introduction")
+                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .foregroundStyle(.secondary)
+                            .padding(.vertical, 6)
+                            .padding(.horizontal, 14)
+                            .background(
+                                Capsule()
+                                    .fill(Color.primary.opacity(0.06))
+                            )
+                    }
+                    .buttonStyle(SpringButtonStyle())
                     .padding(.bottom, 12)
                 }
                 .padding(.horizontal, 16)
