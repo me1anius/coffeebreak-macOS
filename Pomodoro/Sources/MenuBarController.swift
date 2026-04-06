@@ -30,10 +30,10 @@ final class MenuBarController {
         // Configure the status bar button
         if let button = statusItem.button {
             button.image = Self.makeCoffeeIcon()
-            button.imagePosition = .imageOnly
+            button.imagePosition = .imageLeading
             button.imageScaling = .scaleProportionallyDown
             button.font = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium)
-            button.title = ""
+            button.title = "\u{200B}"
             button.action = #selector(handleClick(_:))
             button.target = self
             // Enable right-click detection
@@ -84,8 +84,8 @@ final class MenuBarController {
 
         if text.contains("Ready") || text.contains("Paused") {
             button.image = Self.makeCoffeeIcon()
-            button.imagePosition = .imageOnly
-            button.title = ""
+            button.imagePosition = .imageLeading
+            button.title = "\u{200B}"
         } else if text.contains("☕") || text.contains("Break") {
             button.image = Self.makeMoonIcon()
             button.imagePosition = .imageLeading

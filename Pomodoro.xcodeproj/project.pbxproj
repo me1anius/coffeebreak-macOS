@@ -17,6 +17,7 @@
 		AA000008 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008; };
 		AA000009 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009; };
 		AA00000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB00000A; };
+		AA00000B /* tick.aiff in Resources */ = {isa = PBXBuildFile; fileRef = AB00000E; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		AB00000B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB00000C /* Pomodoro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pomodoro.entitlements; sourceTree = "<group>"; };
 		AB00000D /* Pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AB00000E /* tick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = tick.aiff; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				AB00000A /* Assets.xcassets */,
 				AB00000B /* Info.plist */,
 				AB00000C /* Pomodoro.entitlements */,
+				AB00000E /* tick.aiff */,
 			);
 			path = Pomodoro;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA00000A /* Assets.xcassets in Resources */,
+				AA00000B /* tick.aiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

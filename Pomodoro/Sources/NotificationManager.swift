@@ -44,9 +44,13 @@ final class NotificationManager: @unchecked Sendable {
         NSSound(named: "Glass")?.play()
     }
 
-    /// Play a subtle tick sound (system "Tink").
+    /// Play a clock tick sound from bundled audio file.
     @MainActor
     func playTickSound() {
-        NSSound(named: "Tink")?.play()
+        if let url = Bundle.main.url(forResource: "tick", withExtension: "aiff") {
+            if let sound = NSSound(contentsOf: url, byReference: true) {
+                sound.play()
+            }
+        }
     }
 }
