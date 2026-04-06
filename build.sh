@@ -40,6 +40,7 @@ SOURCES=(
     "${SOURCE_DIR}/HotkeyManager.swift"
     "${SOURCE_DIR}/AppDelegate.swift"
     "${SOURCE_DIR}/PomodoroApp.swift"
+    "${SOURCE_DIR}/OnboardingView.swift"
 )
 
 echo "   Compiling ${#SOURCES[@]} source files..."

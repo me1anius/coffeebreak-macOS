@@ -9,6 +9,23 @@ struct ProgressRing: View {
     let size: CGFloat
     let isBreak: Bool
 
+    private var clampedProgress: CGFloat {
+        CGFloat(min(progress, 1.0))
+    }
+
+    private var gradient: AngularGradient {
+        AngularGradient(
+            gradient: Gradient(stops: [
+                .init(color: gradientColors[0], location: 0.0),
+                .init(color: gradientColors[1], location: 0.5),
+                .init(color: gradientColors[0], location: 1.0)
+            ]),
+            center: .center,
+            startAngle: .degrees(-90),
+            endAngle: .degrees(270)
+        )
+    }
+
     var body: some View {
         ZStack {
             // Background track
@@ -20,44 +37,24 @@ struct ProgressRing: View {
 
             // Foreground progress arc
             Circle()
-                .trim(from: 0, to: CGFloat(min(progress, 1.0)))
-                .stroke(
-                    AngularGradient(
-                        gradient: Gradient(stops: [
-                            .init(color: gradientColors[0], location: 0.0),
-                            .init(color: gradientColors[1], location: 0.5),
-                            .init(color: gradientColors[0], location: 1.0)
-                        ]),
-                        center: .center,
-                        startAngle: .degrees(-90),
-                        endAngle: .degrees(270)
-                    ),
-                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
-                )
+                .trim(from: 0, to: clampedProgress)
+                .stroke(gradient, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: 0.5), value: progress)
 
             // Glow effect on the leading edge
             Circle()
-                .trim(from: 0, to: CGFloat(min(progress, 1.0)))
-                .stroke(
-                    AngularGradient(
-                        gradient: Gradient(stops: [
-                            .init(color: gradientColors[0], location: 0.0),
-                            .init(color: gradientColors[1], location: 0.5),
-                            .init(color: gradientColors[0], location: 1.0)
-                        ]),
-                        center: .center,
-                        startAngle: .degrees(-90),
-                        endAngle: .degrees(270)
-                    ),
-                    style: StrokeStyle(lineWidth: lineWidth * 0.6, lineCap: .round)
-                )
+                .trim(from: 0, to: clampedProgress)
+                .stroke(gradient, style: StrokeStyle(lineWidth: lineWidth * 0.6, lineCap: .round))
                 .rotationEffect(.degrees(-90))
                 .blur(radius: 6)
                 .opacity(0.4)
-                .animation(.easeInOut(duration: 0.5), value: progress)
         }
         .frame(width: size, height: size)
+        .animation(.easeInOut(duration: 0.5), value: progress)
+        .transaction { transaction in
+            if transaction.disablesAnimations {
+                transaction.animation = nil
+            }
+        }
     }
 }

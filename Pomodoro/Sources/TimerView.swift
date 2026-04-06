@@ -7,6 +7,7 @@ struct TimerView: View {
     @State private var isEditingName: Bool = false
     @State private var isHoveringLabel: Bool = false
     @State private var selectedLabel: String = ""
+    @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: StorageKeys.hasSeenOnboarding)
 
     var body: some View {
         ZStack {
@@ -23,7 +24,13 @@ struct TimerView: View {
             }
         }
         .frame(width: AppSizing.popoverWidth, height: AppSizing.popoverHeight)
-        .animation(.spring(response: 0.4, dampingFraction: 0.85), value: viewModel.showSettings)
+        .overlay {
+            if showOnboarding {
+                OnboardingView(isPresented: $showOnboarding)
+                    .frame(width: AppSizing.popoverWidth, height: AppSizing.popoverHeight)
+                    .transition(.opacity)
+            }
+        }
     }
 
     // MARK: - Timer Content
@@ -34,7 +41,9 @@ struct TimerView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    viewModel.showSettings = true
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                        viewModel.showSettings = true
+                    }
                 }) {
                     Image(systemName: "gearshape.fill")
                         .font(.system(size: 13))

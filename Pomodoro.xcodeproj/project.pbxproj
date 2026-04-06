@@ -16,6 +16,7 @@
 		AA000007 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000007; };
 		AA000008 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000008; };
 		AA000009 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000009; };
+		AA00000C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB00000F; };
 		AA00000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB00000A; };
 		AA00000B /* tick.aiff in Resources */ = {isa = PBXBuildFile; fileRef = AB00000E; };
 /* End PBXBuildFile section */
@@ -35,6 +36,7 @@
 		AB00000C /* Pomodoro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pomodoro.entitlements; sourceTree = "<group>"; };
 		AB00000D /* Pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB00000E /* tick.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = tick.aiff; sourceTree = "<group>"; };
+		AB00000F /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				AB000007 /* MenuBarController.swift */,
 				AB000008 /* NotificationManager.swift */,
 				AB000009 /* Constants.swift */,
+				AB00000F /* OnboardingView.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -171,6 +174,7 @@
 				AA000007 /* MenuBarController.swift in Sources */,
 				AA000008 /* NotificationManager.swift in Sources */,
 				AA000009 /* Constants.swift in Sources */,
+				AA00000C /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

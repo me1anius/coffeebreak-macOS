@@ -33,7 +33,9 @@ struct SettingsView: View {
             // Header with back button
             HStack {
                 Button(action: {
-                    viewModel.showSettings = false
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
+                        viewModel.showSettings = false
+                    }
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 14, weight: .semibold))

@@ -30,10 +30,9 @@ final class MenuBarController {
         // Configure the status bar button
         if let button = statusItem.button {
             button.image = Self.makeCoffeeIcon()
-            button.imagePosition = .imageLeading
-            button.imageScaling = .scaleProportionallyDown
+            button.imagePosition = .imageOnly
             button.font = NSFont.monospacedDigitSystemFont(ofSize: 12, weight: .medium)
-            button.title = "\u{200B}"
+            button.title = ""
             button.action = #selector(handleClick(_:))
             button.target = self
             // Enable right-click detection
@@ -50,32 +49,22 @@ final class MenuBarController {
 
     // MARK: - Coffee Cup Icon
 
-    /// Renders an SF Symbol into a fixed-size canvas to prevent clipping across displays.
-    private static func renderSymbol(_ name: String, pointSize: CGFloat, canvasSize: CGFloat) -> NSImage {
-        let symbol = NSImage(systemSymbolName: name, accessibilityDescription: "Coffee Break")!
-        let config = NSImage.SymbolConfiguration(pointSize: pointSize, weight: .medium)
-        let configured = symbol.withSymbolConfiguration(config) ?? symbol
-
-        let size = NSSize(width: canvasSize, height: canvasSize)
-        let canvas = NSImage(size: size, flipped: false) { rect in
-            let symbolSize = configured.size
-            let x = (rect.width - symbolSize.width) / 2
-            let y = (rect.height - symbolSize.height) / 2
-            configured.draw(in: NSRect(x: x, y: y, width: symbolSize.width, height: symbolSize.height))
-            return true
-        }
-        canvas.isTemplate = true
-        return canvas
-    }
-
     /// Creates the coffee cup icon for the menu bar using SF Symbol `cup.and.saucer.fill`.
     private static func makeCoffeeIcon() -> NSImage {
-        renderSymbol("cup.and.saucer.fill", pointSize: 14, canvasSize: 18)
+        let symbol = NSImage(systemSymbolName: "cup.and.saucer.fill", accessibilityDescription: "Coffee Break")!
+        let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .medium)
+        let configured = symbol.withSymbolConfiguration(config) ?? symbol
+        configured.isTemplate = true
+        return configured
     }
 
     /// Creates the moon icon for break sessions using SF Symbol `moon.fill`.
     private static func makeMoonIcon() -> NSImage {
-        renderSymbol("moon.fill", pointSize: 13, canvasSize: 18)
+        let symbol = NSImage(systemSymbolName: "moon.fill", accessibilityDescription: "Break")!
+        let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
+        let configured = symbol.withSymbolConfiguration(config) ?? symbol
+        configured.isTemplate = true
+        return configured
     }
 
     /// Update the status item text and icon based on timer state.
@@ -84,15 +73,18 @@ final class MenuBarController {
 
         if text.contains("Ready") || text.contains("Paused") {
             button.image = Self.makeCoffeeIcon()
-            button.imagePosition = .imageLeading
-            button.title = "\u{200B}"
+            button.imagePosition = .imageOnly
+            button.title = ""
+            statusItem.length = NSStatusItem.squareLength
         } else if text.contains("☕") || text.contains("Break") {
+            statusItem.length = NSStatusItem.variableLength
             button.image = Self.makeMoonIcon()
             button.imagePosition = .imageLeading
             let time = text.replacingOccurrences(of: "☕ ", with: "")
                           .replacingOccurrences(of: "⏸", with: "").trimmingCharacters(in: .whitespaces)
             button.title = time
         } else {
+            statusItem.length = NSStatusItem.variableLength
             button.image = Self.makeCoffeeIcon()
             button.imagePosition = .imageLeading
             let time = text.replacingOccurrences(of: "🍅 ", with: "")
