@@ -11,6 +11,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Request notification permissions early
         NotificationManager.shared.requestAuthorization()
 
+        // Add a hidden Edit menu so CMD+A/C/V/X work in text fields
+        setupEditMenu()
+
         // Create the shared view model
         let vm = TimerViewModel()
         viewModel = vm
@@ -32,5 +35,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         vm.onHotkeysResume = { [weak hkm] in
             hkm?.reload()
         }
+    }
+
+    // MARK: - Edit Menu
+
+    /// Adds a standard Edit menu so CMD+A, CMD+C, CMD+V, CMD+X work in text fields.
+    /// Menu-bar-only apps don't get one automatically.
+    @MainActor private func setupEditMenu() {
+        let mainMenu = NSMenu()
+
+        let editMenuItem = NSMenuItem()
+        editMenuItem.submenu = {
+            let menu = NSMenu(title: "Edit")
+            menu.addItem(withTitle: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+            menu.addItem(withTitle: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+            menu.addItem(withTitle: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+            menu.addItem(withTitle: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+            menu.addItem(withTitle: "Undo", action: Selector(("undo:")), keyEquivalent: "z")
+            menu.addItem(withTitle: "Redo", action: Selector(("redo:")), keyEquivalent: "Z")
+            return menu
+        }()
+
+        mainMenu.addItem(editMenuItem)
+        NSApp.mainMenu = mainMenu
     }
 }
