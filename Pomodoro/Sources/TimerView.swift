@@ -8,6 +8,7 @@ struct TimerView: View {
     @State private var isHoveringLabel: Bool = false
     @State private var selectedLabel: String = ""
     @State private var showOnboarding: Bool = !UserDefaults.standard.bool(forKey: StorageKeys.hasSeenOnboarding)
+    @FocusState private var isNameFieldFocused: Bool
 
     var body: some View {
         ZStack {
@@ -24,6 +25,12 @@ struct TimerView: View {
             }
         }
         .frame(width: AppSizing.popoverWidth, height: AppSizing.popoverHeight)
+        .onReceive(viewModel.$triggerRename) { trigger in
+            if trigger {
+                isEditingName = true
+                viewModel.triggerRename = false
+            }
+        }
         .onAppear {
             NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak viewModel] event in
                 guard let viewModel = viewModel,
@@ -65,6 +72,7 @@ struct TimerView: View {
         VStack(spacing: 16) {
             // Settings gear button — right-aligned at top
             HStack {
+
                 Spacer()
                 Button(action: {
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
@@ -111,6 +119,13 @@ struct TimerView: View {
                 .padding(.bottom, 20)
         }
         .padding(.top, 4)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if isEditingName {
+                isNameFieldFocused = false
+                isEditingName = false
+            }
+        }
     }
 
     // MARK: - Session Label
@@ -137,6 +152,7 @@ struct TimerView: View {
                         .background(
                             Capsule().fill(Color.primary.opacity(0.06))
                         )
+                        .focused($isNameFieldFocused)
                         .onSubmit {
                             isEditingName = false
                         }
@@ -191,6 +207,14 @@ struct TimerView: View {
         }
         .animation(.easeInOut(duration: 0.2), value: isEditingName)
         .animation(.easeInOut(duration: 0.2), value: viewModel.sessionName.isEmpty)
+        .onChange(of: isEditingName) { editing in
+            if editing {
+                // Small delay so the TextField is in the view hierarchy before focusing
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    isNameFieldFocused = true
+                }
+            }
+        }
     }
 
     // MARK: - Bookmark Menu

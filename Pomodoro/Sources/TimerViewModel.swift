@@ -38,6 +38,7 @@ final class TimerViewModel: ObservableObject {
     @Published var completedPomodoros: Int = 0
     @Published var showSettings: Bool = false
     @Published var sessionName: String = ""
+    @Published var triggerRename: Bool = false
 
     // MARK: Settings (persisted via @AppStorage in SettingsView, read here via UserDefaults)
 
@@ -73,6 +74,11 @@ final class TimerViewModel: ObservableObject {
     }
     var tickSoundEnabled: Bool {
         UserDefaults.standard.bool(forKey: StorageKeys.tickSoundEnabled)
+    }
+    var countdownTickEnabled: Bool {
+        UserDefaults.standard.object(forKey: StorageKeys.countdownTickEnabled) == nil
+            ? true
+            : UserDefaults.standard.bool(forKey: StorageKeys.countdownTickEnabled)
     }
 
     // MARK: Computed
@@ -231,15 +237,17 @@ final class TimerViewModel: ObservableObject {
         remainingSeconds -= 1
         notifyMenuBar()
 
-        // Optional tick sound
-        if tickSoundEnabled {
+        // Tick sounds — only ONE tick per timer fire to avoid doubling
+        let isWorkCountdown = countdownTickEnabled && sessionType == .work && remainingSeconds <= 4 && remainingSeconds > 0
+        let isBreakCountdown = countdownTickEnabled && sessionType.isBreak && remainingSeconds <= 10 && remainingSeconds > 0
+
+        if tickSoundEnabled || isWorkCountdown || isBreakCountdown {
             NotificationManager.shared.playTickSound()
         }
 
-        // 10-second countdown alert at the end of breaks
-        if sessionType.isBreak && remainingSeconds <= 10 && remainingSeconds > 0 {
-            NotificationManager.shared.playTickSound()
-            if remainingSeconds == 10 {
+        // 10-second break warning notification (dispatched async to not block timer)
+        if sessionType.isBreak && remainingSeconds == 10 {
+            DispatchQueue.main.async {
                 NotificationManager.shared.sendSessionNotification(
                     title: "Break ending soon!",
                     body: "10 seconds until focus time resumes."

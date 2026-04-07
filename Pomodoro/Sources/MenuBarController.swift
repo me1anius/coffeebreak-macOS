@@ -138,6 +138,10 @@ final class MenuBarController {
     private func openPopover() {
         guard let button = statusItem.button else { return }
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+
+        // Make the popover's window key so keyboard shortcuts and focus work immediately
+        popover.contentViewController?.view.window?.makeKey()
+
         startEventMonitor()
     }
 

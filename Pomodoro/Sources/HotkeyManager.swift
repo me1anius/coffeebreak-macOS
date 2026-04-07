@@ -8,22 +8,25 @@ enum ShortcutAction: String, CaseIterable, Sendable {
     case startPause = "Start / Pause"
     case skip = "Skip Session"
     case reset = "Reset Timer"
+    case renameTask = "Rename Task"
 
     /// The UserDefaults key storing this shortcut's binding.
     var storageKey: String {
         switch self {
-        case .startPause: return "shortcut_startPause"
-        case .skip:       return "shortcut_skip"
-        case .reset:      return "shortcut_reset"
+        case .startPause:  return "shortcut_startPause"
+        case .skip:        return "shortcut_skip"
+        case .reset:       return "shortcut_reset"
+        case .renameTask:  return "shortcut_renameTask"
         }
     }
 
     /// Unique hotkey ID for Carbon registration.
     var hotkeyID: UInt32 {
         switch self {
-        case .startPause: return 1
-        case .skip:       return 2
-        case .reset:      return 3
+        case .startPause:  return 1
+        case .skip:        return 2
+        case .reset:       return 3
+        case .renameTask:  return 4
         }
     }
 
@@ -194,9 +197,10 @@ final class HotkeyManager {
         guard let action = ShortcutAction.from(hotkeyID: id),
               let vm = viewModel else { return }
         switch action {
-        case .startPause: vm.startPause()
-        case .skip:       vm.skipSession()
-        case .reset:      vm.reset()
+        case .startPause:  vm.startPause()
+        case .skip:        vm.skipSession()
+        case .reset:       vm.reset()
+        case .renameTask:  vm.triggerRename = true
         }
     }
 }

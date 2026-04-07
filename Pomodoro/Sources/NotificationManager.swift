@@ -1,11 +1,22 @@
 import Foundation
 import UserNotifications
 import AppKit
+import AudioToolbox
 
 /// Handles macOS notifications and sound playback for session transitions.
 /// Not confined to @MainActor because notification callbacks arrive on arbitrary queues.
 final class NotificationManager: @unchecked Sendable {
     static let shared = NotificationManager()
+
+    /// System sound ID for the tick — plays on a system thread, zero main thread impact.
+    private var tickSoundID: SystemSoundID = {
+        var soundID: SystemSoundID = 0
+        if let url = Bundle.main.url(forResource: "tick", withExtension: "aiff") {
+            AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        }
+        return soundID
+    }()
+
 
     private init() {}
 
@@ -44,13 +55,10 @@ final class NotificationManager: @unchecked Sendable {
         NSSound(named: "Glass")?.play()
     }
 
-    /// Play a clock tick sound from bundled audio file.
-    @MainActor
+    /// Play the tick sound via AudioServices — runs on a system thread, doesn't touch the RunLoop.
     func playTickSound() {
-        if let url = Bundle.main.url(forResource: "tick", withExtension: "aiff") {
-            if let sound = NSSound(contentsOf: url, byReference: true) {
-                sound.play()
-            }
-        }
+        guard tickSoundID != 0 else { return }
+        AudioServicesPlaySystemSound(tickSoundID)
     }
+
 }
