@@ -32,6 +32,24 @@ struct TimerView: View {
             }
         }
         .onAppear {
+            // Rename task shortcut (local only — only works when popover is open)
+            NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak viewModel] event in
+                guard let viewModel = viewModel, !viewModel.showSettings else { return event }
+                guard let data = UserDefaults.standard.data(forKey: StorageKeys.renameTaskShortcut),
+                      let binding = try? JSONDecoder().decode(ShortcutBinding.self, from: data) else {
+                    return event
+                }
+                let mods = event.modifierFlags.intersection([.control, .option, .shift, .command])
+                guard event.keyCode == binding.keyCode,
+                      mods.rawValue == binding.modifiers else {
+                    return event
+                }
+                DispatchQueue.main.async {
+                    viewModel.triggerRename = true
+                }
+                return nil
+            }
+
             NSEvent.addLocalMonitorForEvents(matching: .scrollWheel) { [weak viewModel] event in
                 guard let viewModel = viewModel,
                       UserDefaults.standard.bool(forKey: StorageKeys.swipeGestureEnabled),

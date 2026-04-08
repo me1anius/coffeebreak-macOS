@@ -25,6 +25,7 @@ enum StorageKeys {
     static let hasSeenOnboarding = "hasSeenOnboarding"
     static let swipeGestureEnabled = "swipeGestureEnabled"
     static let countdownTickEnabled = "countdownTickEnabled"
+    static let renameTaskShortcut = "shortcut_renameTask"
 }
 
 // MARK: - Visual Constants

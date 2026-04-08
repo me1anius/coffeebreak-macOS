@@ -14,6 +14,9 @@ struct SettingsView: View {
     /// Shows an error when user tries an invalid shortcut combo.
     @State private var shortcutError: Bool = false
     @State private var newLabelText: String = ""
+    @State private var recordingRename: Bool = false
+    @State private var renameMonitor: Any? = nil
+    @State private var renameRefresh: Bool = false
 
     // Duration settings (stored in seconds)
     @AppStorage(StorageKeys.workDuration) private var workDuration: Double = Defaults.workDuration
@@ -145,6 +148,8 @@ struct SettingsView: View {
                         ForEach(ShortcutAction.allCases, id: \.rawValue) { action in
                             shortcutRow(action)
                         }
+
+                        renameShortcutRow
 
                         if shortcutError {
                             Text("Must include ⌘ or ⌃")
@@ -435,6 +440,117 @@ struct SettingsView: View {
         shortcutRefresh.toggle()
     }
 
+    // MARK: - Rename Shortcut Row
+
+    private var renameShortcutRow: some View {
+        let _ = renameRefresh
+        let binding: ShortcutBinding? = {
+            guard let data = UserDefaults.standard.data(forKey: StorageKeys.renameTaskShortcut) else { return nil }
+            return try? JSONDecoder().decode(ShortcutBinding.self, from: data)
+        }()
+
+        return HStack {
+            Text("Rename Task")
+                .font(.system(size: 12, weight: .regular, design: .rounded))
+
+            Spacer()
+
+            if recordingRename {
+                Text("Press shortcut...")
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(.orange)
+                    .frame(minWidth: 80)
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5, style: .continuous)
+                            .stroke(.orange.opacity(0.5), lineWidth: 1)
+                    )
+            } else if let binding = binding {
+                HStack(spacing: 4) {
+                    Button(action: { startRecordingRename() }) {
+                        Text(binding.displayString)
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .foregroundStyle(.primary)
+                            .padding(.vertical, 2)
+                            .padding(.horizontal, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                    .fill(Color.primary.opacity(0.06))
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(recordingAction != nil)
+
+                    Button(action: {
+                        UserDefaults.standard.removeObject(forKey: StorageKeys.renameTaskShortcut)
+                        renameRefresh.toggle()
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(recordingAction != nil)
+                }
+            } else {
+                Button(action: { startRecordingRename() }) {
+                    Text("Record")
+                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .foregroundStyle(.secondary)
+                        .padding(.vertical, 2)
+                        .padding(.horizontal, 6)
+                        .background(
+                            RoundedRectangle(cornerRadius: 5, style: .continuous)
+                                .fill(Color.primary.opacity(0.06))
+                        )
+                }
+                .buttonStyle(.plain)
+                .disabled(recordingAction != nil)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func startRecordingRename() {
+        recordingRename = true
+        shortcutError = false
+
+        renameMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            let mods = event.modifierFlags.intersection([.control, .option, .shift, .command])
+
+            if event.keyCode == 53 { // Escape
+                stopRecordingRename()
+                return nil
+            }
+
+            let binding = ShortcutBinding(keyCode: event.keyCode, modifiers: mods.rawValue)
+
+            guard binding.hasCmdOrCtrl else {
+                withAnimation { shortcutError = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    withAnimation { self.shortcutError = false }
+                }
+                return nil
+            }
+
+            if let data = try? JSONEncoder().encode(binding) {
+                UserDefaults.standard.set(data, forKey: StorageKeys.renameTaskShortcut)
+            }
+            stopRecordingRename()
+            return nil
+        }
+    }
+
+    private func stopRecordingRename() {
+        recordingRename = false
+        if let monitor = renameMonitor {
+            NSEvent.removeMonitor(monitor)
+            renameMonitor = nil
+        }
+        renameRefresh.toggle()
+    }
+
     // MARK: - Add Label
 
     private func addLabel() {
@@ -465,7 +581,9 @@ struct SettingsView: View {
         for action in ShortcutAction.allCases {
             ShortcutBinding.remove(for: action)
         }
+        UserDefaults.standard.removeObject(forKey: StorageKeys.renameTaskShortcut)
         viewModel.onShortcutsChanged?()
         shortcutRefresh.toggle()
+        renameRefresh.toggle()
     }
 }

@@ -15,8 +15,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Add a hidden Edit menu so CMD+A/C/V/X work in text fields
         setupEditMenu()
 
-        // Set default shortcut for Rename Task (CMD+L) on first launch
-        setDefaultShortcuts()
+        // Set default CMD+L for Rename Task on first launch
+        if UserDefaults.standard.data(forKey: StorageKeys.renameTaskShortcut) == nil {
+            let cmdL = ShortcutBinding(
+                keyCode: UInt16(kVK_ANSI_L),
+                modifiers: NSEvent.ModifierFlags.command.rawValue
+            )
+            if let data = try? JSONEncoder().encode(cmdL) {
+                UserDefaults.standard.set(data, forKey: StorageKeys.renameTaskShortcut)
+            }
+        }
+
 
         // Create the shared view model
         let vm = TimerViewModel()
@@ -38,19 +47,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         vm.onHotkeysResume = { [weak hkm] in
             hkm?.reload()
-        }
-    }
-
-    // MARK: - Default Shortcuts
-
-    private func setDefaultShortcuts() {
-        // Only set if user hasn't configured it yet
-        if ShortcutBinding.load(for: .renameTask) == nil {
-            let cmdL = ShortcutBinding(
-                keyCode: UInt16(kVK_ANSI_L),
-                modifiers: NSEvent.ModifierFlags.command.rawValue
-            )
-            cmdL.save(for: .renameTask)
         }
     }
 
